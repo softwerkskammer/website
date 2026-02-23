@@ -1,10 +1,143 @@
-<!doctype html>
-<html lang=de>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset=utf-8>
-<title>Softwerkskammer</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Craft Communities</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<style>
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f6fa;
+    color: #333;
+  }
+
+  /* Fullscreen map */
+  #map {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* Floating header */
+  .header {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    background: rgba(255,255,255,0.95);
+    padding: 12px 24px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  /* Marker glow */
+  .glow-marker {
+    filter: drop-shadow(0 0 5px #00b894)
+            drop-shadow(0 0 10px rgba(0,184,148,0.6));
+    transition: 0.3s ease;
+  }
+  .glow-marker:hover {
+    filter: drop-shadow(0 0 10px #00d9a1)
+            drop-shadow(0 0 20px rgba(0,217,161,0.9));
+  }
+
+  /* Popup style */
+  .leaflet-popup-content-wrapper {
+    background: #ffffff;
+    color: #2d3436;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  .leaflet-popup-tip {
+    background: #ffffff;
+  }
+  .popup-link a {
+    color: #00b894;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .popup-link a:hover {
+    color: #00d9a1;
+  }
+
+  footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    color: #636e72;
+    font-size: 0.9rem;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(5px);
+  }
+</style>
 </head>
 <body>
-<p>WIP</p>
+
+<div id="map"></div>
+<div class="header">Software Craft Communities — Germany, Austria & Switzerland</div>
+<footer>Built with ❤️ for the Software Craft Community</footer>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+  const map = L.map('map', { zoomControl: true });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+const locations = [
+  {name:"Softwerkskammer Berlin", lat:52.5200, lon:13.4050, url:"https://www.meetup.com/software-craftsmanship-berlin/"},
+  {name:"Softwerkskammer Düsseldorf", lat:51.2277, lon:6.7735, url:"https://www.meetup.com/de-de/softwerkskammer-dusseldorf/"},
+  {name:"Softwerkskammer Hamburg", lat:53.5511, lon:9.9937, url:"https://www.meetup.com/sokahh/"},
+  {name:"Softwerkskammer Karlsruhe", lat:49.0069, lon:8.4037, url:"https://app.agorakit.org/groups/3374"},
+  {name:"Softwerkskammer Kiel", lat:54.3233, lon:10.1228, url:"https://www.meetup.com/de-de/software-craftsmanship-kiel-region/"},
+  {name:"Softwerkskammer Köln", lat:50.9375, lon:6.9603, url:"https://www.meetup.com/softwerkskammer-koln/"},
+  {name:"Softwerkskammer Lübeck", lat:53.8655, lon:10.6866, url:"https://www.meetup.com/softwerkskammer-luebeck/"},
+  {name:"Softwerkskammer München", lat:48.1351, lon:11.5820, url:"https://www.meetup.com/de-DE/munich-software-craft-community/"},
+  {name:"Softwerkskammer Münster / Osnabrück / Bielefeld", lat:52.0302, lon:8.5325, url:"https://www.meetup.com/socramob/"},
+  {name:"Softwerkskammer Nürnberg", lat:49.4521, lon:11.0767, url:"https://www.meetup.com/de-de/softwerkskammer-nuernberg/"},
+  {name:"Softwerkskammer Rhein-Neckar", lat:49.4875, lon:8.4660, url:"https://www.meetup.com/de-de/softwerkskammer-rhein-neckar/"},
+  {name:"Softwerkskammer Thüringen", lat:50.9848, lon:11.0299, url:"https://www.meetup.com/swkthde/"},
+  {name:"Softwerkskammer Wien", lat:48.2082, lon:16.3738, url:"https://swkwien.github.io/"}
+];
+
+  const markerGroup = L.featureGroup();
+
+  locations.forEach(loc => {
+    const marker = L.circleMarker([loc.lat, loc.lon], {
+      radius: 7,
+      color: "#00b894",
+      fillColor: "#00b894",
+      fillOpacity: 1,
+      weight: 1,
+      className: "glow-marker"
+    }).bindPopup(
+      `<div class="popup-link">
+        <strong><a href="${loc.url}" target="_blank">${loc.name}</a></strong>
+        <!--
+        <p style="margin:6px 0 0;font-size:12px;color:#636e72;">${loc.description}</p>
+        -->
+        <p style="margin:6px 0 0;font-size:12px;color:#636e72;">
+      </div>`
+    );
+    marker.addTo(markerGroup);
+  });
+
+  markerGroup.addTo(map);
+  map.fitBounds(markerGroup.getBounds(), { padding: [50,50] });
+</script>
+
 </body>
 </html>
