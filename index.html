@@ -99,9 +99,10 @@
 <script>
   const map = L.map('map', { zoomControl: true });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-    subdomains: 'abcd',
+  // CARTO's basemaps.cartocdn.com now requires an API key (tiles started returning
+  // "API KEY REQUIRED"). Using the official key-free OSM tile server instead.
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
     maxZoom: 19
   }).addTo(map);
 
@@ -130,8 +131,6 @@
       map.fitBounds(markerGroup.getBounds(), { padding: [50,50] });
     })
     .catch(err => console.error("Failed to load locations:", err));
-
-  const markerGroup = L.featureGroup();
 
 </script>
 
