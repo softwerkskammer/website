@@ -104,8 +104,6 @@
 <script>
   const map = L.map('map', { zoomControl: true });
 
-  // CARTO's basemaps.cartocdn.com now requires an API key (tiles started returning
-  // "API KEY REQUIRED"). Using the official key-free OSM tile server instead.
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors',
     maxZoom: 19
