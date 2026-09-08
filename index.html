@@ -38,6 +38,11 @@
     z-index: 1;
   }
 
+  /* Mute the standard OSM tile colors to approximate a lighter basemap look */
+  .leaflet-tile-pane {
+    filter: grayscale(80%) brightness(1.1) contrast(0.9);
+  }
+
   /* Marker glow */
   .glow-marker {
     filter: drop-shadow(0 0 5px #00b894)
