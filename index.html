@@ -38,6 +38,11 @@
     z-index: 1;
   }
 
+  /* Mute the standard OSM tile colors to approximate a lighter basemap look */
+  .leaflet-tile-pane {
+    filter: grayscale(80%) brightness(1.1) contrast(0.9);
+  }
+
   /* Marker glow */
   .glow-marker {
     filter: drop-shadow(0 0 5px #00b894)
@@ -99,9 +104,8 @@
 <script>
   const map = L.map('map', { zoomControl: true });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-    subdomains: 'abcd',
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
     maxZoom: 19
   }).addTo(map);
 
@@ -130,8 +134,6 @@
       map.fitBounds(markerGroup.getBounds(), { padding: [50,50] });
     })
     .catch(err => console.error("Failed to load locations:", err));
-
-  const markerGroup = L.featureGroup();
 
 </script>
 
